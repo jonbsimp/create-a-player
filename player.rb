@@ -7,11 +7,17 @@ class Player
         @score
     end
 
+    def convert_height(height)
+        feet = height / 12
+        inches = height % 12
+        new_height = "#{feet}'#{inches}"
+    end
+
     def gym
         @score += 1
     end
 
-    def dog_cat
+    def dog_cat(choice)
         if choice == "dog"
             @score += 1
         elsif choice == "cat"
@@ -19,11 +25,13 @@ class Player
         end
     end
 
-    def addition
-        if answer = 4
+    def addition(math)
+        if math == 4
             @score += 1
+            puts 'You are a regular Einstein.'
         else
             @score -=1
+            puts 'I can tell you preferred to party than study.'
         end
     end
 end
@@ -51,6 +59,16 @@ class QB < Player
             @score += 1
         end
     end
+
+    def position_trivia(pass_td)
+        if pass_td == 'peyton manning'
+            @score += 1
+            puts 'Well look at you, smarty-pants.'
+        else
+            @score -= 1
+            puts 'well, actually it was Peyton Manning.'
+        end
+    end
 end
 
 class WR < Player
@@ -76,6 +94,16 @@ class WR < Player
             @score += 1
         end
     end
+
+    def position_trivia(rec_td)
+        if rec_td == 'jerry rice'
+            @score += 1
+            puts 'Well look at you, smarty-pants.'
+        else
+            @score -= 1
+            puts 'Well, actually it was Jerry Rice.'
+        end
+    end
 end
 
 class RB < Player
@@ -91,6 +119,15 @@ class RB < Player
         end
     end
 
+    def position_trivia(rush_td)
+        if rush_td == 'emmitt smith'
+            @score += 1
+            puts 'Well look at you, smarty-pants.'
+        else
+            @score -= 1
+            puts 'Well, actually it was Emmitt Smith.'
+        end
+end
     # 1=awareness 2=strength 3=speed
     def attribute_score(pro, con)
         if pro == 3
@@ -116,6 +153,15 @@ class DB < Player
         end
     end
 
+    def position_trivia(picks)
+        if picks == 'paul krause'
+            @score += 1
+            puts 'Well look at you, smarty-pants.'
+        else
+            @score -= 1
+            puts 'Well, actually it was Paul Krause.'
+        end
+end
     # 1=awareness 2=strength 3=speed
     def attribute_score(pro, con)
         if pro == 3
@@ -151,6 +197,16 @@ class LB < Player
             @score += 1
         end
     end
+
+    def position_trivia(tackles)
+        if tackles == 'jessie tuggle'
+            @score += 1
+            puts 'Well look at you, smarty-pants.'
+        else
+            @score -= 1
+            puts 'Well, actually it was Jessie Tuggle.'
+        end
+    end
 end
 
 class DL < Player
@@ -176,6 +232,16 @@ class DL < Player
             @score += 1
         end
     end
+
+    def position_trivia(sacks)
+        if sacks == 'bruce smith'
+            @score += 1
+            puts 'Well look at you, smarty-pants.'
+        else
+            @score -= 1
+            puts 'Well, actually it was Bruce Smith.'
+        end
+    end
 end
 
 def career
@@ -185,6 +251,12 @@ def career
 
     puts "Welcome #{name}. Let's see where your career goes from here. What position do you play? Type 1 for Quarterback, 2 for Wide Receiver, 3 for Running Back, 4 for Denfensive Back, 5 for Linebacker, 6 for Defensive Lineman"
     input = gets.chomp.to_i
+    positions = [1,2,3,4,5,6]
+    unless positions.include?input
+        puts 'please select input a number 1-6 corresponding to your position.'
+        input = gets.chomp.to_i
+    end
+
     if input == 1
         position = 'Quarterback'
         athlete = QB.new
@@ -203,10 +275,6 @@ def career
     elsif input == 6
         position = 'Defensive Line'
         athlete = DL.new
-    else
-        puts 'please select a number 1 through 6'
-        input = gets.chomp.to_i
-        puts ''
     end
     puts ''
 
@@ -220,18 +288,18 @@ def career
     athlete.weight_score(weight)
     puts ''
 
-    puts "Alright, you are a strapping #{height} inches, and #{weight} lbs. Now that we know what you look like, let's define your skills. The most important skills in football are: awareness, strength and speed. Choose your best attribute (type 1 for awareness, type 2 for strength, or type 3 for speed)"
+    puts "Alright, you are a strapping #{athlete.convert_height(height)}, and #{weight} lbs. Now that we know what you look like, let's define your skills. The most important skills in football are: awareness, strength and speed. Choose your best attribute (type 1 for awareness, type 2 for strength, or type 3 for speed)"
     pro = gets.chomp.to_i
+    unless pro == 1 or pro == 2 or pro == 3
+        puts 'please select a number 1-3'
+        pro = gets.chomp.to_i
+    end
     if pro == 1
         strength = 'awareness'
     elsif pro == 2
         strength = 'strength'
     elsif pro == 3
         strength = 'speed'
-    else
-        puts 'please select a number 1 through 3'
-        pro = gets.chomp.to_i
-        puts ''
     end
     puts ''
 
@@ -268,8 +336,10 @@ def career
     end
 
     puts "Now it's time for your dreams to come true. You have received offers from these schools: #{schools}. Choose where you are going..."
-    college = gets.chomp.capitalize
-    unless schools.include?college
+    college = gets.chomp
+    new_college = college.split.map(&:downcase).join(' ')
+    newer_college = new_college.split.map(&:capitalize).join(' ')
+    unless schools.include?newer_college
         puts 'please pick on of the schools that have offered you a scholarship.'
         college = gets.chomp
     end
@@ -319,23 +389,51 @@ def career
 
     puts "Hey #{name}, I'm Coach Taylor from the Cincinatti Bengals. My question for ya is: Would you rather be a cat or dog?"
     choice = gets.chomp
-    if choice != "dog" or choice != "cat"
+    while choice != "dog" && choice != "cat"
         puts "Please choose dog or cat"
         choice = gets.chomp
     end
-    athlete.dog_cat
+    athlete.dog_cat(choice)
 
     puts "Hey #{name}, Coach Brown from the Patriots here. My question for you is: What is 2 + 2?"
+    math = gets.chomp.to_i
+    athlete.addition(math)
 
+    if athlete.class.to_s == 'QB'
+        puts "Who is the all time leader in passing touchdowns for their career?"
+        pass_td = gets.chomp.downcase
+        athlete.position_trivia(pass_td)
+    end
 
+    if athlete.class.to_s == 'WR'
+        puts "Who is the all time leader in receiving touchdowns for their career?"
+        rec_td = gets.chomp.downcase
+        athlete.position_trivia(rec_td)
+    end
 
+    if athlete.class.to_s == 'RB'
+        puts "Who is the all time leader in rushing touchdowns for their career?"
+        rush_td = gets.chomp.downcase
+        athlete.position_trivia(rush_td)
+    end
 
+    if athlete.class.to_s == 'DB'
+        puts "Who is the all time leader in interceptions for their career?"
+        picks = gets.chomp.downcase
+        athlete.position_trivia(picks)
+    end
 
+    if athlete.class.to_s == 'LB'
+        puts "Who is the all time leader in tackles for their career?"
+        tackles = gets.chomp.downcase
+        athlete.position_trivia(tackles)
+    end
 
-
-
-
-
+    if athlete.class.to_s == 'DL'
+        puts "Who is the all time leader in sacks for their career?"
+        sacks = gets.chomp.downcase
+        athlete.position_trivia(sacks)
+    end
 end
 
 career()
